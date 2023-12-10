@@ -21,6 +21,20 @@ def ban_user(message):
             bot.ban_chat_member(chat_id, user_id) # пользователь с user_id будет забанен в чате с chat_id
             bot.reply_to(message, f"Пользователь @{message.reply_to_message.from_user.username} был забанен.")
     else:
-        bot.reply_to(message, "Эта команда должна быть использована в ответ на сообщение пользователя, которого вы хотите забанить.")
+        bot.reply_to(message, "Эта команда должна быть использована в ответ на сообщение пользователя, которого вы хотите забанить.")# Handle all other messages with content_type 'text' (content_types defaults to ['text'])
 
+@bot.message_handler(func=lambda message: "bot" in message.text)
+def echo_message(message):
+        chat_id = message.chat.id # сохранение id чата
+         # сохранение id и статуса пользователя, отправившего сообщение
+        user_id = message.from_user.id
+        user_status = bot.get_chat_member(chat_id, user_id).status 
+         # проверка пользователя
+        if user_status == 'administrator' or user_status == 'creator':
+            bot.reply_to(message, "Невозможно забанить администратора.")
+        else:
+            bot.ban_chat_member(chat_id, user_id) # пользователь с user_id будет забанен в чате с chat_id
+            bot.reply_to(message, f"Пользователь @{message.from_user.username} был забанен.")
+    
 bot.infinity_polling(none_stop=True)
+
